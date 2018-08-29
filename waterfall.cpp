@@ -75,32 +75,32 @@ public:
 		xres = 800;
 		yres = 600;
 		// First (top) box
-		box[0].width = 140;
-		box[0].height = 20;
+		box[0].width = 70;
+		box[0].height = 10;
 		box[0].center.x = 100;
 		box[0].center.y = 500;
 		boxcount++;
 		// Second box
-		box[1].width = 140;
-		box[1].height = 20;
+		box[1].width = 70;
+		box[1].height = 10;
 		box[1].center.x = 240;
 		box[1].center.y = 400;
 		boxcount++;
 		// Third box
-		box[2].width = 140;
-		box[2].height = 20;
+		box[2].width = 70;
+		box[2].height = 10;
 		box[2].center.x = 380;
 		box[2].center.y = 300;
 		boxcount++;
 		// Fourth box
-		box[3].width = 140;
-		box[3].height = 20;
+		box[3].width = 70;
+		box[3].height = 10;
 		box[3].center.x = 520;
 		box[3].center.y = 200;
 		boxcount++;
 		// Fifth (bottom) box
-		box[4].width = 140;
-		box[4].height = 20;
+		box[4].width = 70;
+		box[4].height = 10;
 		box[4].center.x = 640;
 		box[4].center.y = 100;
 		boxcount++;
@@ -199,7 +199,7 @@ int main()
 		    cout << "Generating a rain particlei at " << x << ", " << y << endl; 
 		    x = rand() % 800;
 		    y = 400 + rand() % 200;
-		    makeParticle(x, y);
+		    //makeParticle(x, y);	// Disable rain for now
 		}
 		// END GENERATE RAIN
 
@@ -319,20 +319,21 @@ void movement()
 		p->velocity.y -= GRAVITY;
 		// END ADDED CODE
 
-		// ADDED IN CLASS 8/28/18
 		//check for collision with shapes...
-		Shape *s = &g.box[0];
-		if(p->s.center.y < (s->center.y + s->height) &&
-			p->s.center.x > s->center.x - s->width &&
-			p->s.center.x < s->center.x + s->width &&
-			p->s.center.y > (s->center.y + s->height - 10))		// Added to fix stuck particles under the box
-		{
-		    p->s.center.y = (s->center.y + s->height);			// Added to fix particles getting stuck in the box
-		    p->velocity.y *= -1.0;		// Reverse y velocity when hitting the box
-			p->velocity.y *= 0.3;		//Absorb energy from hitting the box.  Use 0.3 to look like water
-		}
-		// END ADDED CODE
-
+		//for(i = 0; i < g.boxcount; i++)
+		//{
+			Shape *s = &g.box[0];
+			// Reverse y velocity if particle center enters the box!
+			if(p->s.center.y < (s->center.y + s->height) &&			// Below top of the box
+				p->s.center.x > s->center.x - s->width &&		// Right of left side of the box
+				p->s.center.x < s->center.x + s->width &&		// Left of right side of the box
+				p->s.center.y > (s->center.y - s->height))		// Above bottom of the box
+			{
+			    p->s.center.y = (s->center.y + s->height);			// Added to fix particles getting stuck in the box
+			    p->velocity.y *= -1.0;		// Reverse y velocity when hitting the box
+				p->velocity.y *= 0.3;		//Absorb energy from hitting the box.  Use 0.3 to look like water
+			}
+		//}
 
 		//check for off-screen
 		if (p->s.center.y < 0.0) {
@@ -358,8 +359,8 @@ void render()
 		s = &g.box[i];
 		glPushMatrix();
 		glTranslatef(s->center.x, s->center.y, s->center.z);
-		w = s->width/2;
-		h = s->height/2;
+		w = s->width;
+		h = s->height;
 		glBegin(GL_QUADS);
 			glVertex2i(-w, -h);
 			glVertex2i(-w,  h);
