@@ -68,17 +68,42 @@ struct Particle {
 class Global {
 public:
 	int xres, yres;
-	Shape box;
+	Shape box[5];
 	Particle particle[MAX_PARTICLES];		// CHANGED TO ARRAY IN CLASS 8/28/18
-	int n;
+	int n, boxcount;
 	Global() {
 		xres = 800;
 		yres = 600;
-		//define a box shape
-		box.width = 100;
-		box.height = 10;
-		box.center.x = 120 + 5*65;
-		box.center.y = 500 - 5*60;
+		// First (top) box
+		box[0].width = 100;
+		box[0].height = 10;
+		box[0].center.x = 120;
+		box[0].center.y = 500;
+		boxcount++;
+		// Second box
+		box[1].width = 100;
+		box[1].height = 10;
+		box[1].center.x = 200;
+		box[1].center.y = 400;
+		boxcount++;
+		// Third box
+		box[2].width = 100;
+		box[2].height = 10;
+		box[2].center.x = 300;
+		box[2].center.y = 300;
+		boxcount++;
+		// Fourth box
+		box[3].width = 100;
+		box[3].height = 10;
+		box[3].center.x = 400;
+		box[3].center.y = 200;
+		boxcount++;
+		// Fifth (bottom) box
+		box[4].width = 100;
+		box[4].height = 10;
+		box[4].center.x = 500;
+		box[4].center.y = 100;
+		boxcount++;
 		n = 0;
 	}
 } g;
@@ -296,7 +321,7 @@ void movement()
 
 		// ADDED IN CLASS 8/28/18
 		//check for collision with shapes...
-		Shape *s = &g.box;
+		Shape *s = &g.box[0];
 		if(p->s.center.y < (s->center.y + s->height) &&
 			p->s.center.x > s->center.x - s->width &&
 			p->s.center.x < s->center.x + s->width &&
@@ -325,26 +350,30 @@ void render()
 	//
 	//draw a box
 	Shape *s;
-	glColor3ub(90,140,90);
-	s = &g.box;
-	glPushMatrix();
-	glTranslatef(s->center.x, s->center.y, s->center.z);
 	float w, h;
-	w = s->width;
-	h = s->height;
-	glBegin(GL_QUADS);
-		glVertex2i(-w, -h);
-		glVertex2i(-w,  h);
-		glVertex2i( w,  h);
-		glVertex2i( w, -h);
-	glEnd();
-	glPopMatrix();
+	int i;
+	glColor3ub(90,140,90);
+	for(i = 0; i < g.boxcount; i++)
+	{
+		s = &g.box[i];
+		glPushMatrix();
+		glTranslatef(s->center.x, s->center.y, s->center.z);
+		w = s->width;
+		h = s->height;
+		glBegin(GL_QUADS);
+			glVertex2i(-w, -h);
+			glVertex2i(-w,  h);
+			glVertex2i( w,  h);
+			glVertex2i( w, -h);
+		glEnd();
+		glPopMatrix();
+	}
 	//
 
 	//Draw the particle here
 	glPushMatrix();
 	glColor3ub(150,160,220);
-	for(int i = 0; i < g.n; i++)
+	for(i = 0; i < g.n; i++)
 	{
 		Vec *c = &g.particle[i].s.center;
 		w =

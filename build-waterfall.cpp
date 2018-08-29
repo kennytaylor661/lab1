@@ -1,1 +1,1 @@
-g++ rain.cpp -Wall -orain -lX11 -lGL -lGLU -lm
+g++ waterfall.cpp -Wall -owaterfall -lX11 -lGL -lGLU -lm
