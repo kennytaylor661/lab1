@@ -75,33 +75,33 @@ public:
 		xres = 800;
 		yres = 600;
 		// First (top) box
-		box[0].width = 100;
-		box[0].height = 10;
-		box[0].center.x = 120;
+		box[0].width = 140;
+		box[0].height = 20;
+		box[0].center.x = 100;
 		box[0].center.y = 500;
 		boxcount++;
 		// Second box
-		box[1].width = 100;
-		box[1].height = 10;
-		box[1].center.x = 200;
+		box[1].width = 140;
+		box[1].height = 20;
+		box[1].center.x = 240;
 		box[1].center.y = 400;
 		boxcount++;
 		// Third box
-		box[2].width = 100;
-		box[2].height = 10;
-		box[2].center.x = 300;
+		box[2].width = 140;
+		box[2].height = 20;
+		box[2].center.x = 380;
 		box[2].center.y = 300;
 		boxcount++;
 		// Fourth box
-		box[3].width = 100;
-		box[3].height = 10;
-		box[3].center.x = 400;
+		box[3].width = 140;
+		box[3].height = 20;
+		box[3].center.x = 520;
 		box[3].center.y = 200;
 		boxcount++;
 		// Fifth (bottom) box
-		box[4].width = 100;
-		box[4].height = 10;
-		box[4].center.x = 500;
+		box[4].width = 140;
+		box[4].height = 20;
+		box[4].center.x = 640;
 		box[4].center.y = 100;
 		boxcount++;
 		n = 0;
@@ -358,8 +358,8 @@ void render()
 		s = &g.box[i];
 		glPushMatrix();
 		glTranslatef(s->center.x, s->center.y, s->center.z);
-		w = s->width;
-		h = s->height;
+		w = s->width/2;
+		h = s->height/2;
 		glBegin(GL_QUADS);
 			glVertex2i(-w, -h);
 			glVertex2i(-w,  h);
