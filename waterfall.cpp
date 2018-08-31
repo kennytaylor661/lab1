@@ -1,39 +1,11 @@
 
-// CODE ADDED TO CS3350 EXAMPLE TO SIMULATE RAIN
-// (random particles between 400 < y < 600 and random x position)
-// KT 8/28/28
+//
+//modified by:  Kenny Taylor
+//date:  8/31/18
+//
+// WATERFALL SIMULATION WITH RAIN AND WATER SPOUT FUNCTIONS
+//
 
-//
-//modified by:
-//date:
-//
-//3350 Spring 2018 Lab-1
-//This program demonstrates the use of OpenGL and XWindows
-//
-//Assignment is to modify this program.
-//You will follow along with your instructor.
-//
-//Elements to be learned in this lab...
-// .general animation framework
-// .animation loop
-// .object definition and movement
-// .collision detection
-// .mouse/keyboard interaction
-// .object constructor
-// .coding style
-// .defined constants
-// .use of static variables
-// .dynamic memory allocation
-// .simple opengl components
-// .git
-//
-//elements we will add to program...
-//   .Game constructor
-//   .multiple particles
-//   .gravity
-//   .collision detection
-//   .more objects
-//
 #include <iostream>
 using namespace std;
 #include <stdio.h>
