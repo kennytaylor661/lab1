@@ -45,7 +45,7 @@ using namespace std;
 #include <X11/keysym.h>
 #include <GL/glx.h>
 
-const int MAX_PARTICLES = 2000;
+const int MAX_PARTICLES = 10000;
 const float GRAVITY = 0.1;
 
 //some structures
@@ -193,13 +193,13 @@ int main()
 		}
 
 		// GENERATE RAIN
-		r = rand() % 1;		// 100% chance of generating rain particle per loop
+		r = rand() % 2;		// 10% chance of generating rain particle per loop
 		if(r == 0)
 		{
-		    cout << "Generating a rain particlei at " << x << ", " << y << endl; 
+		    cout << "Generating a rain particle at " << x << ", " << y << endl; 
 		    x = rand() % 800;
 		    y = 400 + rand() % 200;
-		    //makeParticle(x, y);	// Disable rain for now
+		    makeParticle(x, y);	// Disable rain for now
 		}
 		// END GENERATE RAIN
 
@@ -271,12 +271,12 @@ void check_mouse(XEvent *e)
 			savey = e->xbutton.y;
 
 			// ADDED IN CLASS 8/28/18 TO MAKE MULTIPLE PARTICLES APPEAR ON MOUSEOVER
-                        int y = g.yres - e->xbutton.y;
-                        makeParticle(e->xbutton.x, y);
-			makeParticle(e->xbutton.x, y);
-			makeParticle(e->xbutton.x, y);
-			makeParticle(e->xbutton.x, y);
-			makeParticle(e->xbutton.x, y);
+                        //int y = g.yres - e->xbutton.y;
+                        //makeParticle(e->xbutton.x, y);
+			//makeParticle(e->xbutton.x, y);
+			//makeParticle(e->xbutton.x, y);
+			//makeParticle(e->xbutton.x, y);
+			//makeParticle(e->xbutton.x, y);
 			// END ADDED CODE
 
 		}
@@ -306,12 +306,16 @@ int check_keys(XEvent *e)
 
 void movement()
 {
-	if (g.n <= 0)
+	int i, j;
+        cout << "  entering movement(), checking " << g.n << " particles.." << endl;
+        if (g.n <= 0)
 		return;
 	// FOR LOOP ADDED IN CLASS 8/28/18
-	for(int i = 0; i < g.n; i++)
+	for(i = 0; i < g.n; i++)
     	{	    
-		Particle *p = &g.particle[i];
+	        Particle *p = &g.particle[i];
+		cout << "    particle(" << i << ")" << endl;
+		cout << "      original position/velocity:  (" << p->s.center.x << ", " << p->s.center.y << ") [" << p->velocity.x << ", " << p->velocity.y << "]" << endl;
 		p->s.center.x += p->velocity.x;
 		p->s.center.y += p->velocity.y;
 
@@ -320,9 +324,10 @@ void movement()
 		// END ADDED CODE
 
 		//check for collision with shapes...
-		//for(i = 0; i < g.boxcount; i++)
-		//{
-			Shape *s = &g.box[0];
+		cout << "      checking for collisions with " << g.boxcount << " objects" << endl;
+		for(j = 0; j < g.boxcount; j++)
+		{
+			Shape *s = &g.box[j];
 			// Reverse y velocity if particle center enters the box!
 			if(p->s.center.y < (s->center.y + s->height) &&			// Below top of the box
 				p->s.center.x > s->center.x - s->width &&		// Right of left side of the box
@@ -333,7 +338,7 @@ void movement()
 			    p->velocity.y *= -1.0;		// Reverse y velocity when hitting the box
 				p->velocity.y *= 0.3;		//Absorb energy from hitting the box.  Use 0.3 to look like water
 			}
-		//}
+		}
 
 		//check for off-screen
 		if (p->s.center.y < 0.0) {
@@ -341,7 +346,9 @@ void movement()
 			g.particle[i] = g.particle[g.n - 1];
 			--g.n;
 		}
+		cout << "      final position/velocity:  (" << p->s.center.x << ", " << p->s.center.y << ") [" << p->velocity.x << ", " << p->velocity.y << "]" << endl;
 	}
+	cout << "  leaving movement()" << endl;
 }
 
 void render()
