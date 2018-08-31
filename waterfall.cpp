@@ -83,25 +83,25 @@ public:
 		// Second box
 		box[1].width = 70;
 		box[1].height = 10;
-		box[1].center.x = 240;
+		box[1].center.x = 200;
 		box[1].center.y = 400;
 		boxcount++;
 		// Third box
 		box[2].width = 70;
 		box[2].height = 10;
-		box[2].center.x = 380;
+		box[2].center.x = 300;
 		box[2].center.y = 300;
 		boxcount++;
 		// Fourth box
 		box[3].width = 70;
 		box[3].height = 10;
-		box[3].center.x = 520;
+		box[3].center.x = 400;
 		box[3].center.y = 200;
 		boxcount++;
 		// Fifth (bottom) box
 		box[4].width = 70;
 		box[4].height = 10;
-		box[4].center.x = 640;
+		box[4].center.x = 500;
 		box[4].center.y = 100;
 		boxcount++;
 		n = 0;
