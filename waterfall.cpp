@@ -193,15 +193,26 @@ int main()
 		}
 
 		// GENERATE RAIN
-		r = rand() % 2;		// 10% chance of generating rain particle per loop
+		//r = rand() % 2;		// 50% chance of generating rain particle per loop
+		//if(r == 0)
+		//{
+		//    cout << "Generating a rain particle at " << x << ", " << y << endl; 
+		//    x = rand() % 800;
+		//    y = 400 + rand() % 200;
+		//    makeParticle(x, y);	// Disable rain for now
+		//}
+		// END GENERATE RAIN
+
+		// WATER SPOUT ON TOP BOX
+		r = rand() % 2;			// 50% chance of generating water particle per loop
 		if(r == 0)
 		{
-		    cout << "Generating a rain particle at " << x << ", " << y << endl; 
-		    x = rand() % 800;
-		    y = 400 + rand() % 200;
-		    makeParticle(x, y);	// Disable rain for now
+		    // Randomize drop location +/- 5 pixels
+		    x = (rand() % 10) - 5;
+		    y = (rand() % 10) - 5;
+	    	    makeParticle(100 + x, 550 + y);
 		}
-		// END GENERATE RAIN
+		// END WATER SPOUT
 
 		movement();
 		render();
