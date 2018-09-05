@@ -53,35 +53,35 @@ public:
 		box[0].height = 10;
 		box[0].center.x = 100;
 		box[0].center.y = 500;
-		strcpy(box[0].label,"box 0");
+		strcpy(box[0].label,"Requirements");
 		boxcount++;
 		// Second box
 		box[1].width = 70;
 		box[1].height = 10;
 		box[1].center.x = 200;
 		box[1].center.y = 400;
-		strcpy(box[1].label, "box 1");
+		strcpy(box[1].label, "Design");
 		boxcount++;
 		// Third box
 		box[2].width = 70;
 		box[2].height = 10;
 		box[2].center.x = 300;
 		box[2].center.y = 300;
-		strcpy(box[2].label, "box 2");
+		strcpy(box[2].label, "Coding");
 		boxcount++;
 		// Fourth box
 		box[3].width = 70;
 		box[3].height = 10;
 		box[3].center.x = 400;
 		box[3].center.y = 200;
-		strcpy(box[3].label, "box 3");
+		strcpy(box[3].label, "Testing");
 		boxcount++;
 		// Fifth (bottom) box
 		box[4].width = 70;
 		box[4].height = 10;
 		box[4].center.x = 500;
 		box[4].center.y = 100;
-		strcpy(box[4].label, "box 4");
+		strcpy(box[4].label, "Maintenance");
 		boxcount++;
 		n = 0;
 	}
