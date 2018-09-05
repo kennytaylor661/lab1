@@ -31,6 +31,7 @@ struct Shape {
 	float width, height;
 	float radius;
 	Vec center;
+	char label[50];
 };
 
 struct Particle {
@@ -52,30 +53,35 @@ public:
 		box[0].height = 10;
 		box[0].center.x = 100;
 		box[0].center.y = 500;
+		strcpy(box[0].label,"box 0");
 		boxcount++;
 		// Second box
 		box[1].width = 70;
 		box[1].height = 10;
 		box[1].center.x = 200;
 		box[1].center.y = 400;
+		strcpy(box[1].label, "box 1");
 		boxcount++;
 		// Third box
 		box[2].width = 70;
 		box[2].height = 10;
 		box[2].center.x = 300;
 		box[2].center.y = 300;
+		strcpy(box[2].label, "box 2");
 		boxcount++;
 		// Fourth box
 		box[3].width = 70;
 		box[3].height = 10;
 		box[3].center.x = 400;
 		box[3].center.y = 200;
+		strcpy(box[3].label, "box 3");
 		boxcount++;
 		// Fifth (bottom) box
 		box[4].width = 70;
 		box[4].height = 10;
 		box[4].center.x = 500;
 		box[4].center.y = 100;
+		strcpy(box[4].label, "box 4");
 		boxcount++;
 		n = 0;
 	}
@@ -390,10 +396,7 @@ void render()
 		s = &g.box[i];
         	r.bot= s->center.y - s->height/2;
 		r.left = s->center.x;
-		//r.bot = g.yres - 20;
-		//r.left = 10;
-		//r.center = 0;
-		ggprint8b(&r, 16, c, "Testing");
+		ggprint8b(&r, 16, c, s->label);
 	}
 
 
