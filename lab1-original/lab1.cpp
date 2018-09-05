@@ -1,11 +1,34 @@
-
 //
 //modified by:  Kenny Taylor
 //date:  8/31/18
 //
-// WATERFALL SIMULATION WITH RAIN AND WATER SPOUT FUNCTIONS
+//3350 Spring 2018 Lab-1
+//This program demonstrates the use of OpenGL and XWindows
 //
-
+//Assignment is to modify this program.
+//You will follow along with your instructor.
+//
+//Elements to be learned in this lab...
+// .general animation framework
+// .animation loop
+// .object definition and movement
+// .collision detection
+// .mouse/keyboard interaction
+// .object constructor
+// .coding style
+// .defined constants
+// .use of static variables
+// .dynamic memory allocation
+// .simple opengl components
+// .git
+//
+//elements we will add to program...
+//   .Game constructor
+//   .multiple particles
+//   .gravity
+//   .collision detection
+//   .more objects
+//
 #include <iostream>
 using namespace std;
 #include <stdio.h>
@@ -16,9 +39,8 @@ using namespace std;
 #include <X11/Xlib.h>
 #include <X11/keysym.h>
 #include <GL/glx.h>
-#include "fonts.h"
 
-const int MAX_PARTICLES = 10000;
+const int MAX_PARTICLES = 2000;
 const float GRAVITY = 0.1;
 
 //some structures
@@ -41,42 +63,17 @@ struct Particle {
 class Global {
 public:
 	int xres, yres;
-	Shape box[5];
+	Shape box;
 	Particle particle[MAX_PARTICLES];		// CHANGED TO ARRAY IN CLASS 8/28/18
-	int n, boxcount;
+	int n;
 	Global() {
 		xres = 800;
 		yres = 600;
-		// First (top) box
-		box[0].width = 70;
-		box[0].height = 10;
-		box[0].center.x = 100;
-		box[0].center.y = 500;
-		boxcount++;
-		// Second box
-		box[1].width = 70;
-		box[1].height = 10;
-		box[1].center.x = 200;
-		box[1].center.y = 400;
-		boxcount++;
-		// Third box
-		box[2].width = 70;
-		box[2].height = 10;
-		box[2].center.x = 300;
-		box[2].center.y = 300;
-		boxcount++;
-		// Fourth box
-		box[3].width = 70;
-		box[3].height = 10;
-		box[3].center.x = 400;
-		box[3].center.y = 200;
-		boxcount++;
-		// Fifth (bottom) box
-		box[4].width = 70;
-		box[4].height = 10;
-		box[4].center.x = 500;
-		box[4].center.y = 100;
-		boxcount++;
+		//define a box shape
+		box.width = 100;
+		box.height = 10;
+		box.center.x = 120 + 5*65;
+		box.center.y = 500 - 5*60;
 		n = 0;
 	}
 } g;
@@ -145,7 +142,7 @@ void check_mouse(XEvent *e);
 int check_keys(XEvent *e);
 void movement();
 void render();
-void makeParticle(int, int);
+
 
 
 //=====================================
@@ -156,7 +153,7 @@ int main()
 	srand(time(NULL));
 	init_opengl();
 	//Main animation loop
-	int r, x, y, done = 0;
+	int done = 0;
 	while (!done) {
 		//Process external events.
 		while (x11.getXPending()) {
@@ -164,29 +161,6 @@ int main()
 			check_mouse(&e);
 			done = check_keys(&e);
 		}
-
-		// GENERATE RAIN
-		//r = rand() % 2;		// 50% chance of generating rain particle per loop
-		//if(r == 0)
-		//{
-		//    cout << "Generating a rain particle at " << x << ", " << y << endl; 
-		//    x = rand() % 800;
-		//    y = 400 + rand() % 200;
-		//    makeParticle(x, y);	// Disable rain for now
-		//}
-		// END GENERATE RAIN
-
-		// WATER SPOUT ON TOP BOX
-		r = rand() % 2;			// 50% chance of generating water particle per loop
-		if(r == 0)
-		{
-		    // Randomize drop location +/- 5 pixels
-		    x = (rand() % 10) - 5;
-		    y = (rand() % 10) - 5;
-	    	    makeParticle(100 + x, 550 + y);
-		}
-		// END WATER SPOUT
-
 		movement();
 		render();
 		x11.swapBuffers();
@@ -205,9 +179,6 @@ void init_opengl(void)
 	glOrtho(0, g.xres, 0, g.yres, -1, 1);
 	//Set the screen background color
 	glClearColor(0.1, 0.1, 0.1, 1.0);
-        //Do this to allow fonts
-        glEnable(GL_TEXTURE_2D);
-        initialize_fonts();
 }
 
 void makeParticle(int x, int y)
@@ -258,12 +229,12 @@ void check_mouse(XEvent *e)
 			savey = e->xbutton.y;
 
 			// ADDED IN CLASS 8/28/18 TO MAKE MULTIPLE PARTICLES APPEAR ON MOUSEOVER
-                        //int y = g.yres - e->xbutton.y;
-                        //makeParticle(e->xbutton.x, y);
-			//makeParticle(e->xbutton.x, y);
-			//makeParticle(e->xbutton.x, y);
-			//makeParticle(e->xbutton.x, y);
-			//makeParticle(e->xbutton.x, y);
+                        int y = g.yres - e->xbutton.y;
+                        makeParticle(e->xbutton.x, y);
+			makeParticle(e->xbutton.x, y);
+			makeParticle(e->xbutton.x, y);
+			makeParticle(e->xbutton.x, y);
+			makeParticle(e->xbutton.x, y);
 			// END ADDED CODE
 
 		}
@@ -293,16 +264,12 @@ int check_keys(XEvent *e)
 
 void movement()
 {
-	int i, j;
-        cout << "  entering movement(), checking " << g.n << " particles.." << endl;
-        if (g.n <= 0)
+	if (g.n <= 0)
 		return;
 	// FOR LOOP ADDED IN CLASS 8/28/18
-	for(i = 0; i < g.n; i++)
+	for(int i = 0; i < g.n; i++)
     	{	    
-	        Particle *p = &g.particle[i];
-		cout << "    particle(" << i << ")" << endl;
-		cout << "      original position/velocity:  (" << p->s.center.x << ", " << p->s.center.y << ") [" << p->velocity.x << ", " << p->velocity.y << "]" << endl;
+		Particle *p = &g.particle[i];
 		p->s.center.x += p->velocity.x;
 		p->s.center.y += p->velocity.y;
 
@@ -310,22 +277,20 @@ void movement()
 		p->velocity.y -= GRAVITY;
 		// END ADDED CODE
 
+		// ADDED IN CLASS 8/28/18
 		//check for collision with shapes...
-		cout << "      checking for collisions with " << g.boxcount << " objects" << endl;
-		for(j = 0; j < g.boxcount; j++)
+		Shape *s = &g.box;
+		if(p->s.center.y < (s->center.y + s->height) &&
+			p->s.center.x > s->center.x - s->width &&
+			p->s.center.x < s->center.x + s->width &&
+			p->s.center.y > (s->center.y + s->height - 10))		// Added to fix stuck particles under the box
 		{
-			Shape *s = &g.box[j];
-			// Reverse y velocity if particle center enters the box!
-			if(p->s.center.y < (s->center.y + s->height) &&			// Below top of the box
-				p->s.center.x > s->center.x - s->width &&		// Right of left side of the box
-				p->s.center.x < s->center.x + s->width &&		// Left of right side of the box
-				p->s.center.y > (s->center.y - s->height))		// Above bottom of the box
-			{
-			    p->s.center.y = (s->center.y + s->height);			// Added to fix particles getting stuck in the box
-			    p->velocity.y *= -1.0;		// Reverse y velocity when hitting the box
-				p->velocity.y *= 0.3;		//Absorb energy from hitting the box.  Use 0.3 to look like water
-			}
+		    p->s.center.y = (s->center.y + s->height);			// Added to fix particles getting stuck in the box
+		    p->velocity.y *= -1.0;		// Reverse y velocity when hitting the box
+			p->velocity.y *= 0.3;		//Absorb energy from hitting the box.  Use 0.3 to look like water
 		}
+		// END ADDED CODE
+
 
 		//check for off-screen
 		if (p->s.center.y < 0.0) {
@@ -333,9 +298,7 @@ void movement()
 			g.particle[i] = g.particle[g.n - 1];
 			--g.n;
 		}
-		cout << "      final position/velocity:  (" << p->s.center.x << ", " << p->s.center.y << ") [" << p->velocity.x << ", " << p->velocity.y << "]" << endl;
 	}
-	cout << "  leaving movement()" << endl;
 }
 
 void render()
@@ -345,30 +308,26 @@ void render()
 	//
 	//draw a box
 	Shape *s;
-	float w, h;
-	int i;
 	glColor3ub(90,140,90);
-	for(i = 0; i < g.boxcount; i++)
-	{
-		s = &g.box[i];
-		glPushMatrix();
-		glTranslatef(s->center.x, s->center.y, s->center.z);
-		w = s->width;
-		h = s->height;
-		glBegin(GL_QUADS);
-			glVertex2i(-w, -h);
-			glVertex2i(-w,  h);
-			glVertex2i( w,  h);
-			glVertex2i( w, -h);
-		glEnd();
-		glPopMatrix();
-	}
+	s = &g.box;
+	glPushMatrix();
+	glTranslatef(s->center.x, s->center.y, s->center.z);
+	float w, h;
+	w = s->width;
+	h = s->height;
+	glBegin(GL_QUADS);
+		glVertex2i(-w, -h);
+		glVertex2i(-w,  h);
+		glVertex2i( w,  h);
+		glVertex2i( w, -h);
+	glEnd();
+	glPopMatrix();
 	//
 
 	//Draw the particle here
 	glPushMatrix();
 	glColor3ub(150,160,220);
-	for(i = 0; i < g.n; i++)
+	for(int i = 0; i < g.n; i++)
 	{
 		Vec *c = &g.particle[i].s.center;
 		w =
@@ -381,20 +340,9 @@ void render()
 		glEnd();
 		glPopMatrix();
 	}
-	
+	//
 	//Draw your 2D text here
-	unsigned int c = 0x00ffff44;
-	Rect r;
-        for(i = 0; i < g.boxcount; i++)
-        {
-		s = &g.box[i];
-        	r.bot= s->center.y - s->height/2;
-		r.left = s->center.x;
-		//r.bot = g.yres - 20;
-		//r.left = 10;
-		//r.center = 0;
-		ggprint8b(&r, 16, c, "Testing");
-	}
+
 
 
 
