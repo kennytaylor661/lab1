@@ -184,7 +184,7 @@ int main()
 
 		// WATER SPOUT ON TOP BOX
 		r = rand() % 2;			// 50% chance of generating water particle per loop
-		if(r == 0)
+		if (r == 0)
 		{
 		    // Randomize drop location +/- 5 pixels
 		    x = (rand() % 10) - 5;
@@ -304,7 +304,7 @@ void movement()
         if (g.n <= 0)
 		return;
 	// FOR LOOP ADDED IN CLASS 8/28/18
-	for(i = 0; i < g.n; i++)
+	for (i = 0; i < g.n; i++)
     	{	    
 	        Particle *p = &g.particle[i];
 		cout << "    particle(" << i << ")" << endl;
@@ -318,11 +318,11 @@ void movement()
 
 		//check for collision with shapes...
 		cout << "      checking for collisions with " << g.boxcount << " objects" << endl;
-		for(j = 0; j < g.boxcount; j++)
+		for (j = 0; j < g.boxcount; j++)
 		{
 			Shape *s = &g.box[j];
 			// Reverse y velocity if particle center enters the box!
-			if(p->s.center.y < (s->center.y + s->height) &&			// Below top of the box
+			if (p->s.center.y < (s->center.y + s->height) &&			// Below top of the box
 				p->s.center.x > s->center.x - s->width &&		// Right of left side of the box
 				p->s.center.x < s->center.x + s->width &&		// Left of right side of the box
 				p->s.center.y > (s->center.y - s->height))		// Above bottom of the box
@@ -354,7 +354,7 @@ void render()
 	float w, h;
 	int i;
 	glColor3ub(90,140,90);
-	for(i = 0; i < g.boxcount; i++)
+	for (i = 0; i < g.boxcount; i++)
 	{
 		s = &g.box[i];
 		glPushMatrix();
@@ -374,7 +374,7 @@ void render()
 	//Draw the particle here
 	glPushMatrix();
 	glColor3ub(150,160,220);
-	for(i = 0; i < g.n; i++)
+	for (i = 0; i < g.n; i++)
 	{
 		Vec *c = &g.particle[i].s.center;
 		w =
@@ -391,7 +391,7 @@ void render()
 	//Draw your 2D text here
 	unsigned int c = 0x00ffff44;
 	Rect r;
-        for(i = 0; i < g.boxcount; i++)
+        for (i = 0; i < g.boxcount; i++)
         {
 		s = &g.box[i];
         	r.bot= s->center.y - s->height/2;
