@@ -24,125 +24,125 @@ const float GRAVITY = 0.1;
 //some structures
 
 struct Vec {
-	float x, y, z;
+    float x, y, z;
 };
 
 struct Shape {
-	float width, height;
-	float radius;
-	Vec center;
-	char label[50];
+    float width, height;
+    float radius;
+    Vec center;
+    char label[50];
 };
 
 struct Particle {
-	Shape s;
-	Vec velocity;
+    Shape s;
+    Vec velocity;
 };
 
 class Global {
 public:
-	int xres, yres;
-	Shape box[5];
-	Particle particle[MAX_PARTICLES];		// CHANGED TO ARRAY IN CLASS 8/28/18
-	int n, boxcount;
-	Global() {
-		xres = 800;
-		yres = 600;
-		// First (top) box
-		box[0].width = 70;
-		box[0].height = 10;
-		box[0].center.x = 100;
-		box[0].center.y = 500;
-		strcpy(box[0].label,"Requirements");
-		boxcount++;
-		// Second box
-		box[1].width = 70;
-		box[1].height = 10;
-		box[1].center.x = 200;
-		box[1].center.y = 400;
-		strcpy(box[1].label, "Design");
-		boxcount++;
-		// Third box
-		box[2].width = 70;
-		box[2].height = 10;
-		box[2].center.x = 300;
-		box[2].center.y = 300;
-		strcpy(box[2].label, "Coding");
-		boxcount++;
-		// Fourth box
-		box[3].width = 70;
-		box[3].height = 10;
-		box[3].center.x = 400;
-		box[3].center.y = 200;
-		strcpy(box[3].label, "Testing");
-		boxcount++;
-		// Fifth (bottom) box
-		box[4].width = 70;
-		box[4].height = 10;
-		box[4].center.x = 500;
-		box[4].center.y = 100;
-		strcpy(box[4].label, "Maintenance");
-		boxcount++;
-		n = 0;
-	}
+    int xres, yres;
+    Shape box[5];
+    Particle particle[MAX_PARTICLES];		// CHANGED TO ARRAY IN CLASS 8/28/18
+    int n, boxcount;
+    Global() {
+        xres = 800;
+        yres = 600;
+        // First (top) box
+        box[0].width = 70;
+        box[0].height = 10;
+        box[0].center.x = 100;
+        box[0].center.y = 500;
+        strcpy(box[0].label,"Requirements");
+        boxcount++;
+        // Second box
+        box[1].width = 70;
+        box[1].height = 10;
+        box[1].center.x = 200;
+        box[1].center.y = 400;
+        strcpy(box[1].label, "Design");
+        boxcount++;
+        // Third box
+        box[2].width = 70;
+        box[2].height = 10;
+        box[2].center.x = 300;
+        box[2].center.y = 300;
+        strcpy(box[2].label, "Coding");
+        boxcount++;
+        // Fourth box
+        box[3].width = 70;
+        box[3].height = 10;
+        box[3].center.x = 400;
+        box[3].center.y = 200;
+        strcpy(box[3].label, "Testing");
+        boxcount++;
+        // Fifth (bottom) box
+        box[4].width = 70;
+        box[4].height = 10;
+        box[4].center.x = 500;
+        box[4].center.y = 100;
+        strcpy(box[4].label, "Maintenance");
+        boxcount++;
+        n = 0;
+    }
 } g;
 
 class X11_wrapper {
 private:
-	Display *dpy;
-	Window win;
-	GLXContext glc;
+    Display *dpy;
+    Window win;
+    GLXContext glc;
 public:
-	~X11_wrapper() {
-		XDestroyWindow(dpy, win);
-		XCloseDisplay(dpy);
-	}
-	X11_wrapper() {
-		GLint att[] = { GLX_RGBA, GLX_DEPTH_SIZE, 24, GLX_DOUBLEBUFFER, None };
-		int w = g.xres, h = g.yres;
-		dpy = XOpenDisplay(NULL);
-		if (dpy == NULL) {
-			cout << "\n\tcannot connect to X server\n" << endl;
-			exit(EXIT_FAILURE);
-		}
-		Window root = DefaultRootWindow(dpy);
-		XVisualInfo *vi = glXChooseVisual(dpy, 0, att);
-		if (vi == NULL) {
-			cout << "\n\tno appropriate visual found\n" << endl;
-			exit(EXIT_FAILURE);
-		} 
-		Colormap cmap = XCreateColormap(dpy, root, vi->visual, AllocNone);
-		XSetWindowAttributes swa;
-		swa.colormap = cmap;
-		swa.event_mask =
-			ExposureMask | KeyPressMask | KeyReleaseMask |
-			ButtonPress | ButtonReleaseMask |
-			PointerMotionMask |
-			StructureNotifyMask | SubstructureNotifyMask;
-		win = XCreateWindow(dpy, root, 0, 0, w, h, 0, vi->depth,
-			InputOutput, vi->visual, CWColormap | CWEventMask, &swa);
-		set_title();
-		glc = glXCreateContext(dpy, vi, NULL, GL_TRUE);
-		glXMakeCurrent(dpy, win, glc);
-	}
-	void set_title() {
-		//Set the window title bar.
-		XMapWindow(dpy, win);
-		XStoreName(dpy, win, "3350 Lab1");
-	}
-	bool getXPending() {
-		//See if there are pending events.
-		return XPending(dpy);
-	}
-	XEvent getXNextEvent() {
-		//Get a pending event.
-		XEvent e;
-		XNextEvent(dpy, &e);
-		return e;
-	}
-	void swapBuffers() {
-		glXSwapBuffers(dpy, win);
-	}
+    ~X11_wrapper() {
+        XDestroyWindow(dpy, win);
+        XCloseDisplay(dpy);
+    }
+    X11_wrapper() {
+        GLint att[] = { GLX_RGBA, GLX_DEPTH_SIZE, 24, GLX_DOUBLEBUFFER, None };
+        int w = g.xres, h = g.yres;
+        dpy = XOpenDisplay(NULL);
+        if (dpy == NULL) {
+            cout << "\n\tcannot connect to X server\n" << endl;
+            exit(EXIT_FAILURE);
+        }
+        Window root = DefaultRootWindow(dpy);
+        XVisualInfo *vi = glXChooseVisual(dpy, 0, att);
+        if (vi == NULL) {
+            cout << "\n\tno appropriate visual found\n" << endl;
+            exit(EXIT_FAILURE);
+        } 
+        Colormap cmap = XCreateColormap(dpy, root, vi->visual, AllocNone);
+        XSetWindowAttributes swa;
+        swa.colormap = cmap;
+        swa.event_mask =
+            ExposureMask | KeyPressMask | KeyReleaseMask |
+            ButtonPress | ButtonReleaseMask |
+            PointerMotionMask |
+            StructureNotifyMask | SubstructureNotifyMask;
+        win = XCreateWindow(dpy, root, 0, 0, w, h, 0, vi->depth,
+            InputOutput, vi->visual, CWColormap | CWEventMask, &swa);
+        set_title();
+        glc = glXCreateContext(dpy, vi, NULL, GL_TRUE);
+        glXMakeCurrent(dpy, win, glc);
+    }
+    void set_title() {
+        //Set the window title bar.
+        XMapWindow(dpy, win);
+        XStoreName(dpy, win, "3350 Lab1");
+    }
+    bool getXPending() {
+        //See if there are pending events.
+        return XPending(dpy);
+    }
+    XEvent getXNextEvent() {
+        //Get a pending event.
+        XEvent e;
+        XNextEvent(dpy, &e);
+        return e;
+    }
+    void swapBuffers() {
+        glXSwapBuffers(dpy, win);
+    }
 } x11;
 
 //Function prototypes
@@ -159,61 +159,60 @@ void makeParticle(int, int);
 //=====================================
 int main()
 {
-	srand(time(NULL));
-	init_opengl();
-	//Main animation loop
-	int r, x, y, done = 0;
-	while (!done) {
-		//Process external events.
-		while (x11.getXPending()) {
-			XEvent e = x11.getXNextEvent();
-			check_mouse(&e);
-			done = check_keys(&e);
-		}
+    srand(time(NULL));
+    init_opengl();
+    //Main animation loop
+    int r, x, y, done = 0;
+    while (!done) {
+        //Process external events.
+        while (x11.getXPending()) {
+            XEvent e = x11.getXNextEvent();
+            check_mouse(&e);
+            done = check_keys(&e);
+        }
 
-		// GENERATE RAIN
-		//r = rand() % 2;		// 50% chance of generating rain particle per loop
-		//if(r == 0)
-		//{
-		//    cout << "Generating a rain particle at " << x << ", " << y << endl; 
-		//    x = rand() % 800;
-		//    y = 400 + rand() % 200;
-		//    makeParticle(x, y);	// Disable rain for now
-		//}
-		// END GENERATE RAIN
+        // GENERATE RAIN
+        //r = rand() % 2;		// 50% chance of generating rain particle per loop
+        //if(r == 0)
+        //{
+        //    cout << "Generating a rain particle at " << x << ", " << y << endl; 
+        //    x = rand() % 800;
+        //    y = 400 + rand() % 200;
+        //    makeParticle(x, y);	// Disable rain for now
+        //}
+        // END GENERATE RAIN
 
-		// WATER SPOUT ON TOP BOX
-		r = rand() % 2;			// 50% chance of generating water particle per loop
-		if (r == 0)
-		{
-		    // Randomize drop location +/- 5 pixels
-		    x = (rand() % 10) - 5;
-		    y = (rand() % 10) - 5;
-	    	    makeParticle(100 + x, 550 + y);
-		}
-		// END WATER SPOUT
+        // WATER SPOUT ON TOP BOX
+        r = rand() % 2;			// 50% chance of generating water particle per loop
+        if (r == 0) {
+            // Randomize drop location +/- 5 pixels
+            x = (rand() % 10) - 5;
+            y = (rand() % 10) - 5;
+            makeParticle(100 + x, 550 + y);
+        }
+        // END WATER SPOUT
 
-		movement();
-		render();
-		x11.swapBuffers();
-	}
-	return 0;
+        movement();
+        render();
+        x11.swapBuffers();
+    }
+    return 0;
 }
 
 void init_opengl(void)
 {
-	//OpenGL initialization
-	glViewport(0, 0, g.xres, g.yres);
-	//Initialize matrices
-	glMatrixMode(GL_PROJECTION); glLoadIdentity();
-	glMatrixMode(GL_MODELVIEW); glLoadIdentity();
-	//Set 2D mode (no perspective)
-	glOrtho(0, g.xres, 0, g.yres, -1, 1);
-	//Set the screen background color
-	glClearColor(0.1, 0.1, 0.1, 1.0);
-        //Do this to allow fonts
-        glEnable(GL_TEXTURE_2D);
-        initialize_fonts();
+    //OpenGL initialization
+    glViewport(0, 0, g.xres, g.yres);
+    //Initialize matrices
+    glMatrixMode(GL_PROJECTION); glLoadIdentity();
+    glMatrixMode(GL_MODELVIEW); glLoadIdentity();
+    //Set 2D mode (no perspective)
+    glOrtho(0, g.xres, 0, g.yres, -1, 1);
+    //Set the screen background color
+    glClearColor(0.1, 0.1, 0.1, 1.0);
+    //Do this to allow fonts
+    glEnable(GL_TEXTURE_2D);
+    initialize_fonts();
 }
 
 void makeParticle(int x, int y)
