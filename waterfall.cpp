@@ -217,188 +217,181 @@ void init_opengl(void)
 
 void makeParticle(int x, int y)
 {
-	if (g.n >= MAX_PARTICLES)
-		return;
-	cout << "makeParticle() " << x << " " << y << endl;
-	//position of particle
-	Particle *p = &g.particle[g.n];			// ARRAY INDEX ADDED IN CLASS 8/28/18
-	p->s.center.x = x;
-	p->s.center.y = y;
-	p->velocity.y = -4.0;
-	p->velocity.x =  1.0;
-	++g.n;
+    if (g.n >= MAX_PARTICLES)
+        return;
+    cout << "makeParticle() " << x << " " << y << endl;
+    //position of particle
+    Particle *p = &g.particle[g.n];			// ARRAY INDEX ADDED IN CLASS 8/28/18
+    p->s.center.x = x;
+    p->s.center.y = y;
+    p->velocity.y = -4.0;
+    p->velocity.x =  1.0;
+    ++g.n;
 }
 
 void check_mouse(XEvent *e)
 {
-	static int savex = 0;
-	static int savey = 0;
+    static int savex = 0;
+    static int savey = 0;
 
-	if (e->type != ButtonRelease &&
-		e->type != ButtonPress &&
-		e->type != MotionNotify) {
-		//This is not a mouse event that we care about.
-		return;
-	}
-	//
-	if (e->type == ButtonRelease) {
-		return;
-	}
-	if (e->type == ButtonPress) {
-		if (e->xbutton.button==1) {
-			//Left button was pressed
-			int y = g.yres - e->xbutton.y;
-			makeParticle(e->xbutton.x, y);
-			return;
-		}
-		if (e->xbutton.button==3) {
-			//Right button was pressed
-			return;
-		}
-	}
-	if (e->type == MotionNotify) {
-		//The mouse moved!
-		if (savex != e->xbutton.x || savey != e->xbutton.y) {
-			savex = e->xbutton.x;
-			savey = e->xbutton.y;
+    if (e->type != ButtonRelease &&
+        e->type != ButtonPress &&
+        e->type != MotionNotify) {
+        //This is not a mouse event that we care about.
+        return;
+    }
+    //
+    if (e->type == ButtonRelease) {
+        return;
+    }
+    if (e->type == ButtonPress) {
+        if (e->xbutton.button==1) {
+            //Left button was pressed
+            int y = g.yres - e->xbutton.y;
+            makeParticle(e->xbutton.x, y);
+            return;
+        }
+        if (e->xbutton.button==3) {
+            //Right button was pressed
+            return;
+        }
+    }
+    if (e->type == MotionNotify) {
+        //The mouse moved!
+        if (savex != e->xbutton.x || savey != e->xbutton.y) {
+            savex = e->xbutton.x;
+            savey = e->xbutton.y;
 
-			// ADDED IN CLASS 8/28/18 TO MAKE MULTIPLE PARTICLES APPEAR ON MOUSEOVER
-                        //int y = g.yres - e->xbutton.y;
-                        //makeParticle(e->xbutton.x, y);
-			//makeParticle(e->xbutton.x, y);
-			//makeParticle(e->xbutton.x, y);
-			//makeParticle(e->xbutton.x, y);
-			//makeParticle(e->xbutton.x, y);
-			// END ADDED CODE
+            // ADDED IN CLASS 8/28/18 TO MAKE MULTIPLE PARTICLES APPEAR ON MOUSEOVER
+            //int y = g.yres - e->xbutton.y;
+            //makeParticle(e->xbutton.x, y);
+            //makeParticle(e->xbutton.x, y);
+            //makeParticle(e->xbutton.x, y);
+            //makeParticle(e->xbutton.x, y);
+            //makeParticle(e->xbutton.x, y);
+            // END ADDED CODE
 
-		}
-	}
+        }
+    }
 }
 
 int check_keys(XEvent *e)
 {
-	if (e->type != KeyPress && e->type != KeyRelease)
-		return 0;
-	int key = XLookupKeysym(&e->xkey, 0);
-	if (e->type == KeyPress) {
-		switch (key) {
-			case XK_1:
-				//Key 1 was pressed
-				break;
-			case XK_a:
-				//Key A was pressed
-				break;
-			case XK_Escape:
-				//Escape key was pressed
-				return 1;
-		}
-	}
-	return 0;
+    if (e->type != KeyPress && e->type != KeyRelease)
+        return 0;
+    int key = XLookupKeysym(&e->xkey, 0);
+    if (e->type == KeyPress) {
+        switch (key) {
+            case XK_1:
+                //Key 1 was pressed
+                break;
+            case XK_a:
+                //Key A was pressed
+                break;
+            case XK_Escape:
+                //Escape key was pressed
+                return 1;
+        }
+    }
+    return 0;
 }
 
 void movement()
 {
-	int i, j;
-        cout << "  entering movement(), checking " << g.n << " particles.." << endl;
-        if (g.n <= 0)
-		return;
-	// FOR LOOP ADDED IN CLASS 8/28/18
-	for (i = 0; i < g.n; i++)
-    	{	    
-	        Particle *p = &g.particle[i];
-		cout << "    particle(" << i << ")" << endl;
-		cout << "      original position/velocity:  (" << p->s.center.x << ", " << p->s.center.y << ") [" << p->velocity.x << ", " << p->velocity.y << "]" << endl;
-		p->s.center.x += p->velocity.x;
-		p->s.center.y += p->velocity.y;
+    int i, j;
+    cout << "  entering movement(), checking " << g.n << " particles.." << endl;
+    if (g.n <= 0)
+        return;
+    // FOR LOOP ADDED IN CLASS 8/28/18
+    for (i = 0; i < g.n; i++) {
+        Particle *p = &g.particle[i];
+        cout << "    particle(" << i << ")" << endl;
+        cout << "      original position/velocity:  (" << p->s.center.x << ", " << p->s.center.y << ") [" << p->velocity.x << ", " << p->velocity.y << "]" << endl;
+        p->s.center.x += p->velocity.x;
+        p->s.center.y += p->velocity.y;
 
-		// ADDED IN CLASS 8/28/18
-		p->velocity.y -= GRAVITY;
-		// END ADDED CODE
+        // ADDED IN CLASS 8/28/18
+        p->velocity.y -= GRAVITY;
+        // END ADDED CODE
 
-		//check for collision with shapes...
-		cout << "      checking for collisions with " << g.boxcount << " objects" << endl;
-		for (j = 0; j < g.boxcount; j++)
-		{
-			Shape *s = &g.box[j];
-			// Reverse y velocity if particle center enters the box!
-			if (p->s.center.y < (s->center.y + s->height) &&			// Below top of the box
-				p->s.center.x > s->center.x - s->width &&		// Right of left side of the box
-				p->s.center.x < s->center.x + s->width &&		// Left of right side of the box
-				p->s.center.y > (s->center.y - s->height))		// Above bottom of the box
-			{
-			    p->s.center.y = (s->center.y + s->height);			// Added to fix particles getting stuck in the box
-			    p->velocity.y *= -1.0;		// Reverse y velocity when hitting the box
-				p->velocity.y *= 0.3;		//Absorb energy from hitting the box.  Use 0.3 to look like water
-			}
-		}
+        //check for collision with shapes...
+        cout << "      checking for collisions with " << g.boxcount << " objects" << endl;
+        for (j = 0; j < g.boxcount; j++) {
+            Shape *s = &g.box[j];
+            // Reverse y velocity if particle center enters the box!
+            if (p->s.center.y < (s->center.y + s->height) &&			// Below top of the box
+                p->s.center.x > s->center.x - s->width &&			// Right of left side of the box
+                p->s.center.x < s->center.x + s->width &&			// Left of right side of the box
+                p->s.center.y > (s->center.y - s->height))			// Above bottom of the box
+            {
+                p->s.center.y = (s->center.y + s->height);			// Added to fix particles getting stuck in the box
+                p->velocity.y *= -1.0;		// Reverse y velocity when hitting the box
+                p->velocity.y *= 0.3;		//Absorb energy from hitting the box.  Use 0.3 to look like water
+            }
+        }
 
-		//check for off-screen
-		if (p->s.center.y < 0.0) {
-			cout << "off screen" << endl;
-			g.particle[i] = g.particle[g.n - 1];
-			--g.n;
-		}
-		cout << "      final position/velocity:  (" << p->s.center.x << ", " << p->s.center.y << ") [" << p->velocity.x << ", " << p->velocity.y << "]" << endl;
+        //check for off-screen
+        if (p->s.center.y < 0.0) {
+            cout << "off screen" << endl;
+            g.particle[i] = g.particle[g.n - 1];
+            --g.n;
+        }
+        cout << "      final position/velocity:  (" << p->s.center.x << ", " << p->s.center.y << ") [" << p->velocity.x << ", " << p->velocity.y << "]" << endl;
 	}
-	cout << "  leaving movement()" << endl;
+    cout << "  leaving movement()" << endl;
 }
 
 void render()
 {
-	glClear(GL_COLOR_BUFFER_BIT);
-	//Draw shapes...
-	//
-	//draw a box
-	Shape *s;
-	float w, h;
-	int i;
-	glColor3ub(90,140,90);
-	for (i = 0; i < g.boxcount; i++)
-	{
-		s = &g.box[i];
-		glPushMatrix();
-		glTranslatef(s->center.x, s->center.y, s->center.z);
-		w = s->width;
-		h = s->height;
-		glBegin(GL_QUADS);
-			glVertex2i(-w, -h);
-			glVertex2i(-w,  h);
-			glVertex2i( w,  h);
-			glVertex2i( w, -h);
-		glEnd();
-		glPopMatrix();
-	}
-	//
+    glClear(GL_COLOR_BUFFER_BIT);
+    //Draw shapes...
+    //
+    //draw a box
+    Shape *s;
+    float w, h;
+    int i;
+    glColor3ub(90,140,90);
+    for (i = 0; i < g.boxcount; i++) {
+        s = &g.box[i];
+        glPushMatrix();
+        glTranslatef(s->center.x, s->center.y, s->center.z);
+        w = s->width;
+        h = s->height;
+        glBegin(GL_QUADS);
+            glVertex2i(-w, -h);
+            glVertex2i(-w,  h);
+            glVertex2i( w,  h);
+            glVertex2i( w, -h);
+        glEnd();
+        glPopMatrix();
+    }
+    //
 
-	//Draw the particle here
-	glPushMatrix();
-	glColor3ub(150,160,220);
-	for (i = 0; i < g.n; i++)
-	{
-		Vec *c = &g.particle[i].s.center;
-		w =
-		h = 2;
-		glBegin(GL_QUADS);
-			glVertex2i(c->x-w, c->y-h);
-			glVertex2i(c->x-w, c->y+h);
-			glVertex2i(c->x+w, c->y+h);
-			glVertex2i(c->x+w, c->y-h);
-		glEnd();
-		glPopMatrix();
-	}
+    //Draw the particle here
+    glPushMatrix();
+    glColor3ub(150,160,220);
+    for (i = 0; i < g.n; i++) {
+        Vec *c = &g.particle[i].s.center;
+        w =
+        h = 2;
+        glBegin(GL_QUADS);
+            glVertex2i(c->x-w, c->y-h);
+            glVertex2i(c->x-w, c->y+h);
+            glVertex2i(c->x+w, c->y+h);
+            glVertex2i(c->x+w, c->y-h);
+        glEnd();
+        glPopMatrix();
+    }
 	
-	//Draw your 2D text here
-	unsigned int c = 0x00ffff44;
-	Rect r;
-        for (i = 0; i < g.boxcount; i++)
-        {
-		s = &g.box[i];
-        	r.bot= s->center.y - s->height/2;
-		r.left = s->center.x;
-		ggprint8b(&r, 16, c, s->label);
-	}
-
-
+    //Draw your 2D text here
+    unsigned int c = 0x00ffff44;
+    Rect r;
+    for (i = 0; i < g.boxcount; i++) {
+        s = &g.box[i];
+        r.bot= s->center.y - s->height/2;
+        r.left = s->center.x;
+        ggprint8b(&r, 16, c, s->label);
+    }
 
 }
 
