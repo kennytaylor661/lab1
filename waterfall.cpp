@@ -314,8 +314,8 @@ void movement()
         p->velocity.y -= GRAVITY;
         // END ADDED CODE
 
-        //check for collision with shapes...
-        cout << "      checking for collisions with " << g.boxcount << " objects" << endl;
+        // Check for collision with rectangles...
+        cout << "      checking for collisions with " << g.boxcount << " rectangles" << endl;
         for (j = 0; j < g.boxcount; j++) {
             Shape *s = &g.box[j];
             // Reverse y velocity if particle center enters the box!
@@ -328,6 +328,18 @@ void movement()
                 p->velocity.y *= -1.0;		// Reverse y velocity when hitting the box
                 p->velocity.y *= 0.3;		//Absorb energy from hitting the box.  Use 0.3 to look like water
             }
+        }
+
+        // Check for collision with circle
+        cout << "      checking for collisions with the circle" << endl;
+        if (p->s.center.x > circle_left &&                          // Right of left side of the circle
+            p->s.center.x < circle_right &&                         // Left of right side of the circle
+            p->s.center.y < sqrt(-(p->s.center.x^2) + 1200*p->s.center.x - 357500)  // Under the arc of the circle
+        {
+            p->s.center.y = sqrt(-(p->s.center.x^2) + 1200*p->s.center.x - 357500)  // Added to fix particles getting
+                                                                                    // stuck under the circle
+            p->velocity.x = what?
+            p->velocity.y = what?
         }
 
         //check for off-screen
