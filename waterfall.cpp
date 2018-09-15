@@ -27,6 +27,7 @@ struct Vec {
     float x, y, z;
 };
 
+// This Shape struct will work for circles also, yay
 struct Shape {
     float width, height;
     float radius;
@@ -43,8 +44,9 @@ class Global {
 public:
     int xres, yres;
     Shape box[5];
+    Shape circle[5];
     Particle particle[MAX_PARTICLES];		// CHANGED TO ARRAY IN CLASS 8/28/18
-    int n, boxcount;
+    int n, boxcount = 0, circlecount = 0;
     Global() {
         xres = 800;
         yres = 600;
@@ -83,6 +85,12 @@ public:
         box[4].center.y = 100;
         strcpy(box[4].label, "Maintenance");
         boxcount++;
+
+        // First circle
+        circle[0].radius = 70;
+        circle[0].center.x = 600;
+        circle[0].center.y = 0;
+        circlecount++;
         n = 0;
     }
 } g;
@@ -172,14 +180,14 @@ int main()
         }
 
         // GENERATE RAIN
-        //r = rand() % 2;		// 50% chance of generating rain particle per loop
-        //if(r == 0)
-        //{
-        //    cout << "Generating a rain particle at " << x << ", " << y << endl; 
-        //    x = rand() % 800;
-        //    y = 400 + rand() % 200;
-        //    makeParticle(x, y);	// Disable rain for now
-        //}
+        r = rand() % 2;		// 50% chance of generating rain particle per loop
+        if(r == 0)
+        {
+            cout << "Generating a rain particle at " << x << ", " << y << endl; 
+            x = rand() % 800;
+            y = 400 + rand() % 200;
+            makeParticle(x, y);	// Disable rain for now
+        }
         // END GENERATE RAIN
 
         // WATER SPOUT ON TOP BOX
@@ -305,8 +313,8 @@ void movement()
     // FOR LOOP ADDED IN CLASS 8/28/18
     for (i = 0; i < g.n; i++) {
         Particle *p = &g.particle[i];
-        cout << "    particle(" << i << ")" << endl;
-        cout << "      original position/velocity:  (" << p->s.center.x << ", " << p->s.center.y << ") [" << p->velocity.x << ", " << p->velocity.y << "]" << endl;
+        //cout << "    particle(" << i << ")" << endl;
+        //cout << "      original position/velocity:  (" << p->s.center.x << ", " << p->s.center.y << ") [" << p->velocity.x << ", " << p->velocity.y << "]" << endl;
         p->s.center.x += p->velocity.x;
         p->s.center.y += p->velocity.y;
 
@@ -331,21 +339,24 @@ void movement()
         }
 
         // Check for collision with circle centered at (600, 0) with radius 50
-        // Collision detection is working.  Need to add a few things:
+        // Collision detection is working.  Still need to add a couple things:
         //   1) Draw the circle in GL in the render() section
-        //   2) Need to generalize the formula of the circle arch so we can use circles at different centers
-        //   3) Set up an array of circles so multiple circles can be simulated
-        //   4) Find equation of the tangent line and make particles bounce off of it
-        cout << "      checking for collisions with the circle" << endl;
-        if (p->s.center.x > 550 &&                                  // Right of left side of the circle
-            p->s.center.x < 650 &&                                  // Left of right side of the circle
-            p->s.center.y < sqrt(-pow(p->s.center.x,2) + 1200*p->s.center.x - 357500) &&  // Under the upper arc of the circle
-            p->s.center.y > -sqrt(-pow(p->s.center.x,2) + 1200*p->s.center.x - 357500))   // Above the lower arc of the circle
-        {
-            p->s.center.y = sqrt(-pow(p->s.center.x,2) + 1200*p->s.center.x - 357500);    // Added to fix particles getting
-                                                                                          // stuck under the circle
-            //p->velocity.x = what?
-            //p->velocity.y = what?
+        //   2) Find equation of the tangent line and make particles bounce off of it
+        cout << "      checking for collisions with " << g.circlecount << " circles" << endl;
+        for(j = 0; j < g.circlecount; j++) {
+            Shape *s = &g.circle[j];
+            if (p->s.center.x > (s->center.x - s->radius) &&                                  // Right of left side of the circle
+                p->s.center.x < (s->center.x + s->radius) &&                                  // Left of right side of the circle
+                // Under the upper arc of the circle (general form)
+                p->s.center.y < (sqrt(pow(s->radius,2) - pow(p->s.center.x,2) + 2*s->center.x*p->s.center.x - pow(s->center.x,2)) - s->center.y) &&
+                // Above the lower arc of the circle (general form)
+                p->s.center.y > -(sqrt(pow(s->radius,2) - pow(p->s.center.x,2) + 2*s->center.x*p->s.center.x - pow(s->center.x,2)) - s->center.y))
+            {
+                // Added to fix particles getting stuck unter the circle
+                p->s.center.y = (sqrt(pow(s->radius,2) - pow(p->s.center.x,2) + 2*s->center.x*p->s.center.x - pow(s->center.x,2)) - s->center.y);
+                //p->velocity.x = what?
+                //p->velocity.y = what?
+            }
         }
 
         //check for off-screen
@@ -354,7 +365,7 @@ void movement()
             g.particle[i] = g.particle[g.n - 1];
             --g.n;
         }
-        cout << "      final position/velocity:  (" << p->s.center.x << ", " << p->s.center.y << ") [" << p->velocity.x << ", " << p->velocity.y << "]" << endl;
+        //cout << "      final position/velocity:  (" << p->s.center.x << ", " << p->s.center.y << ") [" << p->velocity.x << ", " << p->velocity.y << "]" << endl;
 	}
     cout << "  leaving movement()" << endl;
 }
