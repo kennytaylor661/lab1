@@ -330,16 +330,22 @@ void movement()
             }
         }
 
-        // Check for collision with circle
+        // Check for collision with circle centered at (600, 0) with radius 50
+        // Collision detection is working.  Need to add a few things:
+        //   1) Draw the circle in GL in the render() section
+        //   2) Need to generalize the formula of the circle arch so we can use circles at different centers
+        //   3) Set up an array of circles so multiple circles can be simulated
+        //   4) Find equation of the tangent line and make particles bounce off of it
         cout << "      checking for collisions with the circle" << endl;
-        if (p->s.center.x > circle_left &&                          // Right of left side of the circle
-            p->s.center.x < circle_right &&                         // Left of right side of the circle
-            p->s.center.y < sqrt(-(p->s.center.x^2) + 1200*p->s.center.x - 357500)  // Under the arc of the circle
+        if (p->s.center.x > 550 &&                                  // Right of left side of the circle
+            p->s.center.x < 650 &&                                  // Left of right side of the circle
+            p->s.center.y < sqrt(-pow(p->s.center.x,2) + 1200*p->s.center.x - 357500) &&  // Under the upper arc of the circle
+            p->s.center.y > -sqrt(-pow(p->s.center.x,2) + 1200*p->s.center.x - 357500))   // Above the lower arc of the circle
         {
-            p->s.center.y = sqrt(-(p->s.center.x^2) + 1200*p->s.center.x - 357500)  // Added to fix particles getting
-                                                                                    // stuck under the circle
-            p->velocity.x = what?
-            p->velocity.y = what?
+            p->s.center.y = sqrt(-pow(p->s.center.x,2) + 1200*p->s.center.x - 357500);    // Added to fix particles getting
+                                                                                          // stuck under the circle
+            //p->velocity.x = what?
+            //p->velocity.y = what?
         }
 
         //check for off-screen
