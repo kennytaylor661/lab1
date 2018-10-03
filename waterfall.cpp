@@ -46,7 +46,7 @@ public:
     Shape box[5];
     Shape circle[5];
     Particle particle[MAX_PARTICLES];		// CHANGED TO ARRAY IN CLASS 8/28/18
-    int n, boxcount = 0, circlecount = 0;
+    int n, boxCount = 0, circleCount = 0;
     Global() {
         xres = 800;
         yres = 600;
@@ -56,41 +56,41 @@ public:
         box[0].center.x = 100;
         box[0].center.y = 500;
         strcpy(box[0].label,"Requirements");
-        boxcount++;
+        boxCount++;
         // Second box
         box[1].width = 70;
         box[1].height = 10;
         box[1].center.x = 200;
         box[1].center.y = 400;
         strcpy(box[1].label, "Design");
-        boxcount++;
+        boxCount++;
         // Third box
         box[2].width = 70;
         box[2].height = 10;
         box[2].center.x = 300;
         box[2].center.y = 300;
         strcpy(box[2].label, "Coding");
-        boxcount++;
+        boxCount++;
         // Fourth box
         box[3].width = 70;
         box[3].height = 10;
         box[3].center.x = 400;
         box[3].center.y = 200;
         strcpy(box[3].label, "Testing");
-        boxcount++;
+        boxCount++;
         // Fifth (bottom) box
         box[4].width = 70;
         box[4].height = 10;
         box[4].center.x = 500;
         box[4].center.y = 100;
         strcpy(box[4].label, "Maintenance");
-        boxcount++;
+        boxCount++;
 
         // First circle
         circle[0].radius = 70;
         circle[0].center.x = 600;
         circle[0].center.y = 0;
-        circlecount++;
+        circleCount++;
         n = 0;
     }
 } g;
@@ -323,8 +323,8 @@ void movement()
         // END ADDED CODE
 
         // Check for collision with rectangles...
-        cout << "      checking for collisions with " << g.boxcount << " rectangles" << endl;
-        for (j = 0; j < g.boxcount; j++) {
+        cout << "      checking for collisions with " << g.boxCount << " rectangles" << endl;
+        for (j = 0; j < g.boxCount; j++) {
             Shape *s = &g.box[j];
             // Reverse y velocity if particle center enters the box!
             if (p->s.center.y < (s->center.y + s->height) &&			// Below top of the box
@@ -342,8 +342,8 @@ void movement()
         // Collision detection is working.  Still need to add a couple things:
         //   1) Draw the circle in GL in the render() section
         //   2) Find equation of the tangent line and make particles bounce off of it
-        cout << "      checking for collisions with " << g.circlecount << " circles" << endl;
-        for(j = 0; j < g.circlecount; j++) {
+        cout << "      checking for collisions with " << g.circleCount << " circles" << endl;
+        for(j = 0; j < g.circleCount; j++) {
             Shape *s = &g.circle[j];
             if (p->s.center.x > (s->center.x - s->radius) &&                                  // Right of left side of the circle
                 p->s.center.x < (s->center.x + s->radius) &&                                  // Left of right side of the circle
@@ -380,7 +380,7 @@ void render()
     float w, h;
     int i;
     glColor3ub(90,140,90);
-    for (i = 0; i < g.boxcount; i++) {
+    for (i = 0; i < g.boxCount; i++) {
         s = &g.box[i];
         glPushMatrix();
         glTranslatef(s->center.x, s->center.y, s->center.z);
@@ -397,9 +397,11 @@ void render()
     //
 
     //Draw the particle here
-    glPushMatrix();
-    glColor3ub(150,160,220);
+    //glPushMatrix();
+    //glColor3ub(150,160,220);
     for (i = 0; i < g.n; i++) {
+        glPushMatrix();
+        glColor3ub(150,160,220);
         Vec *c = &g.particle[i].s.center;
         w =
         h = 2;
@@ -411,11 +413,18 @@ void render()
         glEnd();
         glPopMatrix();
     }
+
+    // Draw the circles
+    //for (i < 0; i < g.circleCount; i++) {
+        glPushMatrix();
+
+        glPopMatrix();
+    //}
 	
     //Draw your 2D text here
     unsigned int c = 0x00ffff44;
     Rect r;
-    for (i = 0; i < g.boxcount; i++) {
+    for (i = 0; i < g.boxCount; i++) {
         s = &g.box[i];
         r.bot= s->center.y - s->height/2;
         r.left = s->center.x;
@@ -423,9 +432,4 @@ void render()
     }
 
 }
-
-
-
-
-
 
