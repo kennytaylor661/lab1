@@ -1,13 +1,12 @@
+// Modified by:  Kenny Taylor
+// Date:  10/4/18
+// Original code by Gordon Griesel
 
-//
-//modified by:  Kenny Taylor
-//date:  8/31/18
 //
 // WATERFALL SIMULATION WITH RAIN AND WATER SPOUT FUNCTIONS
 //
 
 #include <iostream>
-using namespace std;
 #include <stdio.h>
 #include <cstdlib>
 #include <ctime>
@@ -17,6 +16,8 @@ using namespace std;
 #include <X11/keysym.h>
 #include <GL/glx.h>
 #include "fonts.h"
+
+using namespace std;
 
 const int MAX_PARTICLES = 10000;
 const float GRAVITY = 0.1;
@@ -415,11 +416,18 @@ void render()
     }
 
     // Draw the circles
-    //for (i < 0; i < g.circleCount; i++) {
+    for (i = 0; i < g.circleCount; i++) {
         glPushMatrix();
-
+        glColor3ub(160, 82, 45);
+        glTranslatef(g.circle[i].center.x, g.circle[i].center.y, 0.0);
+        // Sweep the full 360 degrees with one vertex per degree
+        glBegin(GL_POLYGON);
+        for (int j = 0; j < 360; j++) {
+            glVertex3f(g.circle[i].radius*cos(j), g.circle[i].radius*sin(j), 0.0);            
+        }
+        glEnd();
         glPopMatrix();
-    //}
+    }
 	
     //Draw your 2D text here
     unsigned int c = 0x00ffff44;
