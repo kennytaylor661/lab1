@@ -24,29 +24,33 @@ const float GRAVITY = 0.1;
 
 //some structures
 
-struct Vec {
+struct Vec
+{
     float x, y, z;
 };
 
 // This Shape struct will work for circles also, yay
-struct Shape {
+struct Shape
+{
     float width, height;
     float radius;
     Vec center;
     char label[50];
 };
 
-struct Particle {
+struct Particle
+{
     Shape s;
     Vec velocity;
 };
 
-class Global {
+class Global
+{
 public:
     int xres, yres;
     Shape box[5];
     Shape circle[5];
-    Particle particle[MAX_PARTICLES];		// CHANGED TO ARRAY IN CLASS 8/28/18
+    Particle particle[MAX_PARTICLES];
     int n, boxCount = 0, circleCount = 0;
     Global() {
         xres = 800;
@@ -96,18 +100,22 @@ public:
     }
 } g;
 
-class X11_wrapper {
+class X11_wrapper
+{
 private:
     Display *dpy;
     Window win;
     GLXContext glc;
 public:
-    ~X11_wrapper() {
+    ~X11_wrapper()
+    {
         XDestroyWindow(dpy, win);
         XCloseDisplay(dpy);
     }
-    X11_wrapper() {
-        GLint att[] = { GLX_RGBA, GLX_DEPTH_SIZE, 24, GLX_DOUBLEBUFFER, None };
+    X11_wrapper()
+    {
+        GLint att[] = { GLX_RGBA, GLX_DEPTH_SIZE, 24, GLX_DOUBLEBUFFER,
+            None };
         int w = g.xres, h = g.yres;
         dpy = XOpenDisplay(NULL);
         if (dpy == NULL) {
@@ -134,22 +142,26 @@ public:
         glc = glXCreateContext(dpy, vi, NULL, GL_TRUE);
         glXMakeCurrent(dpy, win, glc);
     }
-    void set_title() {
+    void set_title()
+    {
         //Set the window title bar.
         XMapWindow(dpy, win);
         XStoreName(dpy, win, "3350 Lab1");
     }
-    bool getXPending() {
+    bool getXPending()
+    {
         //See if there are pending events.
         return XPending(dpy);
     }
-    XEvent getXNextEvent() {
+    XEvent getXNextEvent()
+    {
         //Get a pending event.
         XEvent e;
         XNextEvent(dpy, &e);
         return e;
     }
-    void swapBuffers() {
+    void swapBuffers()
+    {
         glXSwapBuffers(dpy, win);
     }
 } x11;
@@ -181,10 +193,10 @@ int main()
         }
 
         // GENERATE RAIN
-        r = rand() % 2;		// 50% chance of generating rain particle per loop
-        if(r == 0)
-        {
-            cout << "Generating a rain particle at " << x << ", " << y << endl; 
+        r = rand() % 2;		// 50% chance of generating rain particle
+        if (r == 0) {
+            cout << "Generating a rain particle at " << x << ", " << y;
+            cout << endl; 
             x = rand() % 800;
             y = 400 + rand() % 200;
             makeParticle(x, y);	// Disable rain for now
@@ -192,7 +204,7 @@ int main()
         // END GENERATE RAIN
 
         // WATER SPOUT ON TOP BOX
-        r = rand() % 2;			// 50% chance of generating water particle per loop
+        r = rand() % 2;			// 50% chance of generating water particle
         if (r == 0) {
             // Randomize drop location +/- 5 pixels
             x = (rand() % 10) - 5;
@@ -230,7 +242,7 @@ void makeParticle(int x, int y)
         return;
     cout << "makeParticle() " << x << " " << y << endl;
     //position of particle
-    Particle *p = &g.particle[g.n];			// ARRAY INDEX ADDED IN CLASS 8/28/18
+    Particle *p = &g.particle[g.n];
     p->s.center.x = x;
     p->s.center.y = y;
     p->velocity.y = -4.0;
@@ -271,15 +283,13 @@ void check_mouse(XEvent *e)
             savex = e->xbutton.x;
             savey = e->xbutton.y;
 
-            // ADDED IN CLASS 8/28/18 TO MAKE MULTIPLE PARTICLES APPEAR ON MOUSEOVER
+            // MAKE MULTIPLE PARTICLES APPEAR ON MOUSEOVER
             //int y = g.yres - e->xbutton.y;
             //makeParticle(e->xbutton.x, y);
             //makeParticle(e->xbutton.x, y);
             //makeParticle(e->xbutton.x, y);
             //makeParticle(e->xbutton.x, y);
             //makeParticle(e->xbutton.x, y);
-            // END ADDED CODE
-
         }
     }
 }
@@ -308,10 +318,11 @@ int check_keys(XEvent *e)
 void movement()
 {
     int i, j;
-    cout << "  entering movement(), checking " << g.n << " particles.." << endl;
+    cout << "  entering movement(), checking " << g.n << " particles..";
+    cout << endl;
     if (g.n <= 0)
         return;
-    // FOR LOOP ADDED IN CLASS 8/28/18
+    
     for (i = 0; i < g.n; i++) {
         Particle *p = &g.particle[i];
         //cout << "    particle(" << i << ")" << endl;
@@ -319,12 +330,11 @@ void movement()
         p->s.center.x += p->velocity.x;
         p->s.center.y += p->velocity.y;
 
-        // ADDED IN CLASS 8/28/18
         p->velocity.y -= GRAVITY;
-        // END ADDED CODE
 
         // Check for collision with rectangles...
-        cout << "      checking for collisions with " << g.boxCount << " rectangles" << endl;
+        cout << "      checking for collisions with " << g.boxCount;
+        cout << " rectangles" << endl;
         for (j = 0; j < g.boxCount; j++) {
             Shape *s = &g.box[j];
             // Reverse y velocity if particle center enters the box!
@@ -339,12 +349,10 @@ void movement()
             }
         }
 
-        // Check for collision with circle centered at (600, 0) with radius 50
-        // Collision detection is working.  Still need to add a couple things:
-        //   1) Draw the circle in GL in the render() section
-        //   2) Find equation of the tangent line and make particles bounce off of it
-        cout << "      checking for collisions with " << g.circleCount << " circles" << endl;
-        for(j = 0; j < g.circleCount; j++) {
+        // Check for collision with each circle
+        cout << "      checking for collisions with " << g.circleCount;
+        cout << " circles" << endl;
+        for (j = 0; j < g.circleCount; j++) {
             Shape *s = &g.circle[j];
             if (p->s.center.x > (s->center.x - s->radius) &&                                  // Right of left side of the circle
                 p->s.center.x < (s->center.x + s->radius) &&                                  // Left of right side of the circle
@@ -423,7 +431,8 @@ void render()
         // Sweep the full 360 degrees with one vertex per degree
         glBegin(GL_POLYGON);
         for (int j = 0; j < 360; j++) {
-            glVertex3f(g.circle[i].radius*cos(j), g.circle[i].radius*sin(j), 0.0);            
+            glVertex3f(g.circle[i].radius*cos(j),
+                g.circle[i].radius*sin(j), 0.0);            
         }
         glEnd();
         glPopMatrix();
