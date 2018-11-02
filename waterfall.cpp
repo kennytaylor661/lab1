@@ -53,6 +53,9 @@ class Global
 {
 public:
     int xres, yres;
+    double physicsTime = 0.0, renderTime = 0.0, totalTime = 0.0,
+        frameRate = 0.0;
+    struct timespec lastFrame;
     Shape box[5];
     Shape circle[5];
     Particle particle[MAX_PARTICLES];
@@ -322,6 +325,10 @@ int check_keys(XEvent *e)
 
 void movement()
 {
+    struct timespec ts, te;
+    // Record the start time
+    clock_gettime(CLOCK_REALTIME, &ts);
+
     int i, j;
     cout << "  entering movement(), checking " << g.n << " particles..";
     cout << endl;
@@ -387,11 +394,19 @@ void movement()
         }
         //cout << "      final position/velocity:  (" << p->s.center.x << ", " << p->s.center.y << ") [" << p->velocity.x << ", " << p->velocity.y << "]" << endl;
 	}
+
+    clock_gettime(CLOCK_REALTIME, &te);
+    g.physicsTime = timeDiff(&ts, &te);
+
     cout << "  leaving movement()" << endl;
 }
 
 void render()
 {
+    struct timespec ts, te;
+    // Record the start time
+    clock_gettime(CLOCK_REALTIME, &ts);
+
     glClear(GL_COLOR_BUFFER_BIT);
     //Draw shapes...
     //
@@ -457,5 +472,23 @@ void render()
         ggprint8b(&r, 16, c, s->label);
     }
 
+    // Calculate framerate
+    struct timespec thisFrame;
+    double frameRate;
+    clock_gettime(CLOCK_REALTIME, &thisFrame);
+    g.totalTime = timeDiff(&g.lastFrame, &thisFrame);
+    g.lastFrame = thisFrame;
+    g.frameRate = 1/g.totalTime;
+
+    // Draw the physics and render times
+    clock_gettime(CLOCK_REALTIME, &te);
+    g.renderTime = timeDiff(&ts, &te);
+    r.bot = 500;
+    r.left = 700;
+    ggprint8b(&r, 16, c, "");
+    ggprint8b(&r, 16, c, "physics time: %lf sec", g.physicsTime);
+    ggprint8b(&r, 16, c, "render time:  %lf sec", g.renderTime);
+    ggprint8b(&r, 16, c, "total frame time:  %lf sec", g.totalTime);
+    ggprint8b(&r, 16, c, "frame rate:  %lf sec", g.frameRate);
 }
 
