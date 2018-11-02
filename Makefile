@@ -5,7 +5,7 @@ LFLAGS = -lrt -lX11 -lGLU -lGL -lm #-lXrandr
 all:  waterfall 
 
 waterfall: waterfall.cpp
-	g++ waterfall.cpp libggfonts.a -Wall -Wextra $(LFLAGS) -o waterfall
+	g++ waterfall.cpp libggfonts.a timers.cpp -Wall -Wextra $(LFLAGS) -o waterfall
 
 clean:
 	rm -f waterfall 

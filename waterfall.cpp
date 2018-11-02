@@ -19,6 +19,11 @@
 
 using namespace std;
 
+// timer.cpp functions
+extern struct timespec timeStart, timeCurrent;
+extern double timeDiff(struct timespec *start, struct timespec *end);
+extern void timeCopy(struct timespec *dest, struct timespec *source);
+
 const int MAX_PARTICLES = 10000;
 const float GRAVITY = 0.1;
 
@@ -357,12 +362,18 @@ void movement()
             if (p->s.center.x > (s->center.x - s->radius) &&                                  // Right of left side of the circle
                 p->s.center.x < (s->center.x + s->radius) &&                                  // Left of right side of the circle
                 // Under the upper arc of the circle (general form)
-                p->s.center.y < (sqrt(pow(s->radius,2) - pow(p->s.center.x,2) + 2*s->center.x*p->s.center.x - pow(s->center.x,2)) - s->center.y) &&
+                p->s.center.y < (sqrt(pow(s->radius,2)
+                    - pow(p->s.center.x,2) + 2*s->center.x*p->s.center.x
+                    - pow(s->center.x,2)) - s->center.y) &&
                 // Above the lower arc of the circle (general form)
-                p->s.center.y > -(sqrt(pow(s->radius,2) - pow(p->s.center.x,2) + 2*s->center.x*p->s.center.x - pow(s->center.x,2)) - s->center.y))
+                p->s.center.y > -(sqrt(pow(s->radius,2)
+                    - pow(p->s.center.x,2) + 2*s->center.x*p->s.center.x
+                    - pow(s->center.x,2)) - s->center.y))
             {
                 // Added to fix particles getting stuck unter the circle
-                p->s.center.y = (sqrt(pow(s->radius,2) - pow(p->s.center.x,2) + 2*s->center.x*p->s.center.x - pow(s->center.x,2)) - s->center.y);
+                p->s.center.y = (sqrt(pow(s->radius,2)
+                    - pow(p->s.center.x,2) + 2*s->center.x*p->s.center.x
+                    - pow(s->center.x,2)) - s->center.y);
                 //p->velocity.x = what?
                 //p->velocity.y = what?
             }
@@ -406,8 +417,6 @@ void render()
     //
 
     //Draw the particle here
-    //glPushMatrix();
-    //glColor3ub(150,160,220);
     for (i = 0; i < g.n; i++) {
         glPushMatrix();
         glColor3ub(150,160,220);
