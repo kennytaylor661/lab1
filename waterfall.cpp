@@ -201,7 +201,8 @@ int main()
         }
 
         // GENERATE RAIN
-        r = rand() % 2;		// 50% chance of generating rain particle
+        //r = rand() % 2;		// 50% chance of generating rain particle
+        r = 0;                  // Generate rain particle every iteration
         if (r == 0) {
             cout << "Generating a rain particle at " << x << ", " << y;
             cout << endl; 
@@ -212,7 +213,8 @@ int main()
         // END GENERATE RAIN
 
         // WATER SPOUT ON TOP BOX
-        r = rand() % 2;			// 50% chance of generating water particle
+        //r = rand() % 2;			// 50% chance of generating water particle
+        r = 0;                      // Generate rain particle every iteration
         if (r == 0) {
             // Randomize drop location +/- 5 pixels
             x = (rand() % 10) - 5;
@@ -474,7 +476,6 @@ void render()
 
     // Calculate framerate
     struct timespec thisFrame;
-    double frameRate;
     clock_gettime(CLOCK_REALTIME, &thisFrame);
     g.totalTime = timeDiff(&g.lastFrame, &thisFrame);
     g.lastFrame = thisFrame;
